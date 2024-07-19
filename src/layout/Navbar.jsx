@@ -9,6 +9,7 @@ import Cart from "./Cart";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Wishlist from "./Wishlist";
+import { getProducts } from "../services/productService";
 
 const Navbar = () => {
   const [showCart, setShowCart] = useState(false);
@@ -73,7 +74,7 @@ const Navbar = () => {
           </div>
         </nav>
       </header>
-      {showCart && <Cart closeCart={() => setShowCart(false)} />}
+      {showCart && <Cart closeCart={() => setShowCart(false)} handleCheckout={() => handleCheckout()} />}
       {showWishlist && <Wishlist closeWishlist={() => setShowWishlist(false)} />}
     </>
   );

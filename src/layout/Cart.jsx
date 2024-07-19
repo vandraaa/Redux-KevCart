@@ -2,12 +2,18 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../services/productService";
 import Loading from "../components/Loading";
-import { clearCart, removeFromCart } from "../redux/cartSlice";
+import {
+  addToCart,
+  clearCart,
+  removeFromCart,
+  updateCart,
+} from "../redux/cartSlice";
 import Swal from "sweetalert2";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import emptyCartImage from "../../public/empty-cart.png";
 import { Link } from "react-router-dom";
+import CountCart from "../fragments/CountCart";
 
 const Cart = ({ closeCart }) => {
   const cart = useSelector((state) => state.cart.data);
@@ -80,6 +86,38 @@ const Cart = ({ closeCart }) => {
           text: "Thank you for shopping with us!",
           showConfirmButton: false,
           timer: 1500,
+        });
+      }
+    });
+  };
+
+  const handlePlus = (id) => {
+    dispatch(addToCart({ id, qty: 1 }));
+  };
+
+  const handleMinus = (id) => {
+    const item = cart.find((item) => item.id === id);
+    if (item.qty > 1) {
+      dispatch(updateCart({ id, qty: item.qty - 1 }));
+    } else {
+      handleRemoveFromCart(id);
+    }
+  };
+
+  const handleCheckout = () => {
+    Swal.fire({
+      icon: "warning",
+      title: "Are you sure?",
+      text: "You will checkout the cart",
+      showCancelButton: true,
+      confirmButtonText: "Yes, checkout it!",
+      cancelButtonText: "No, keep it",
+    }).then((res) => {
+      if(res.isConfirmed) {
+        Swal.fire({
+          icon: "info",
+          title: "Checkout Coming Soon",
+          confirmButtonText: "OK",
         })
       }
     })
@@ -94,7 +132,9 @@ const Cart = ({ closeCart }) => {
       <div className="max-h-[70vh] h-full w-full max-w-3xl overflow-y-scroll bg-white rounded-lg shadow-lg m-4 relative">
         <div className="p-6">
           <div className="flex justify-between items-center border-b pb-4 mb-6">
-            <h2 className="text-lg md:text-2xl font-bold text-gray-800">Shopping Cart</h2>
+            <h2 className="text-lg md:text-2xl font-bold text-gray-800">
+              Shopping Cart
+            </h2>
             {cart.length > 0 && (
               <button
                 onClick={() => handleClearCart()}
@@ -127,31 +167,39 @@ const Cart = ({ closeCart }) => {
                       />
                     </div>
                     <div className="ml-4 w-3/5">
-                      <Link to={`/product/${product.id}`} onClick={closeCart} className="text-[10px] sm:text-base font-semibold text-slate-600 mb-2">
-                        <p className="leading-3 md:leading-[1.2rem]">{product.title}</p>
+                      <Link
+                        to={`/product/${product.id}`}
+                        onClick={closeCart}
+                        className="text-[10px] sm:text-base font-semibold text-slate-600 mb-2"
+                      >
+                        <p className="leading-3 md:leading-[1.2rem]">
+                          {product.title}
+                        </p>
                       </Link>
                       <p className="text-md font-bold mt-2">
-                        ${product.price.toFixed(2)} ({item.qty}x)
+                        ${product.price.toFixed(2)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center">
+                  <div className="text-end space-y-4">
                     <button
                       onClick={() => handleRemoveFromCart(item.id)}
-                      className="text-lg font-semibold text-red-600 hover:text-white border-[2.5px] border-red-600 px-3 py-2 rounded-xl hover:bg-red-600 duration-300 ease-in"
+                      className="text-base font-semibold text-slate-600 hover:text-red-600 duration-300 ease-in"
                     >
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
+                    <CountCart
+                      itemCount={item.qty}
+                      plus={() => handlePlus(item.id)}
+                      minus={() => handleMinus(item.id)}
+                    />
                   </div>
                 </div>
               );
             })
           ) : (
             <div className="flex flex-col justify-center items-center space-y-2 mt-8">
-              <img
-                src={emptyCartImage}
-                className="size-32"
-              />
+              <img src={emptyCartImage} className="size-32" />
               <p className="text-center text-gray-500 font-medium">
                 Your cart is empty.
               </p>
@@ -160,15 +208,18 @@ const Cart = ({ closeCart }) => {
 
           {cart.length > 0 && products.length > 0 && (
             <div className="border-t pt-4 mt-6">
-              <div className="flex justify-between items-center text-lg font-semibold text-gray-700">
+              <div className="flex justify-between items-center text-sm sm:text-lg font-semibold text-gray-700">
                 <p>
                   Subtotal :{" "}
-                  <span className="text-xl font-bold">
+                  <span className="sm:text-xl text-base font-bold">
                     ${totalPrice.toFixed(2)}
                   </span>
                 </p>
-                <button className="bg-green-700 font-semibold text-sm text-white py-2 px-4 rounded-lg hover:bg-green-800 duration-300 ease-linear">
-                  Checkout
+                <button
+                  onClick={() => handleCheckout()}
+                  className="bg-green-700 font-semibold text-xs sm:text-sm text-white py-2 px-4 rounded-lg hover:bg-green-800 duration-300 ease-linear"
+                >
+                  Checkout WhatsApp
                 </button>
               </div>
             </div>
