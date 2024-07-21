@@ -227,7 +227,7 @@ const Cart = ({ closeCart }) => {
                   onClick={() => handleCheckout()}
                   className="bg-green-700 font-semibold text-xs sm:text-sm text-white py-2 px-4 rounded-lg hover:bg-green-800 duration-300 ease-linear"
                 >
-                  Checkout (WhatsApp)
+                  Checkout
                 </button>
               </div>
             </div>
