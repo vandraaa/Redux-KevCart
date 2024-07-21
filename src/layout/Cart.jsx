@@ -126,8 +126,8 @@ const Cart = ({ closeCart }) => {
     }).then((res) => {
       if(res.isConfirmed) {
         window.open(`${urlWhatsApp}&text=${encodeURIComponent(messageCheckout)}`, "_blank")
+        dispatch(clearCart());
       }
-      dispatch(clearCart());
     })
   };
 
