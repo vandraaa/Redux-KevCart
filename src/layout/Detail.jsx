@@ -3,17 +3,20 @@ import { getDetailProduct } from "../services/productService";
 import { useParams } from "react-router-dom";
 import { Rating } from "@mui/material";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { faHeart as farHeart } from "@fortawesome/free-regular-svg-icons";
 import Loading from "../components/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import { addToCart } from "../redux/cartSlice";
+import { addToWishlist, removeFromWishlist } from "../redux/wishlistSlice";
 
 const DetailProduct = () => {
   const { id } = useParams();
   const [product, setProduct] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.wishlist.data);
 
   useEffect(() => {
     const fetchProduct = async (id) => {
@@ -46,7 +49,19 @@ const DetailProduct = () => {
       showConfirmButton: false,
       timer: 1500,
     });
-  }
+  };
+
+  const isWishlisted = (productId) => {
+    return wishlist.some((item) => item.id === productId);
+  };
+
+  const handleAddToWishlist = (product) => {
+    if (isWishlisted(product.id)) {
+      dispatch(removeFromWishlist({ id: product.id }));
+    } else {
+      dispatch(addToWishlist({ id: product.id }));
+    }
+  };
 
   return (
     <div className="flex justify-center items-center min-h-screen">
@@ -72,7 +87,6 @@ const DetailProduct = () => {
                   {product.title}
                 </h2>
               )}
-
               {product.category && (
                 <p className="text-slate-500 font-medium">
                   {capitalizeFirstLetter(product.category)}
@@ -97,14 +111,28 @@ const DetailProduct = () => {
                 <p className="text-3xl lg:text-4xl font-bold">
                   ${product.price}
                 </p>
-                <button onClick={() => handleAddToCart(product)}
-                className="font-semibold bg-green-700 text-white py-2 px-3 text-sm rounded-lg hover:bg-green-800 duration-300 ease-linear">
+                <button
+                  onClick={() => handleAddToCart(product)}
+                  className="font-semibold bg-green-700 text-white py-2 px-3 text-sm rounded-lg hover:bg-green-800 duration-300 ease-linear"
+                >
                   <FontAwesomeIcon icon={faCartPlus} className="me-2" />
                   Add To Cart
                 </button>
               </div>
+              <button
+                onClick={() => handleAddToWishlist(product)}
+                className="font-semibold mt-2 sm:mt-0 text-red-500 py-2 px-1 text-sm rounded-lg hover:text-red-700 duration-300 ease-linear"
+              >
+                <FontAwesomeIcon
+                  icon={isWishlisted(product.id) ? faHeart : farHeart}
+                  className="me-2"
+                />
+                {isWishlisted(product.id)
+                  ? "Remove from Wishlist"
+                  : "Add to Wishlist"}
+              </button>
 
-              <p className="text-sm mt-4">{product.description}</p>
+              <p className="text-sm mt-2">{product.description}</p>
             </div>
           </div>
         )}

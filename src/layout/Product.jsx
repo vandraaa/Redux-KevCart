@@ -18,7 +18,6 @@ const Product = ({ setIsLoaded }) => {
   const [search, setSearch] = useState("");
   const dispatch = useDispatch();
   const wishlist = useSelector((state) => state.wishlist.data);
-  const cart = useSelector((state) => state.cart.data);
 
   useEffect(() => {
     const fetchProducts = async () => {
