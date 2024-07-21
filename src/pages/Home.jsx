@@ -11,6 +11,7 @@ const HomePage = () => {
         <>
             <Navbar />
             <Product setIsLoaded={setIsLoaded} />
+            <Footer />
         </>
     )
 }

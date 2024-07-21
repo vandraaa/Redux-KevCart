@@ -104,21 +104,28 @@ const Cart = ({ closeCart }) => {
     }
   };
 
+  const urlWhatsApp = "https://api.whatsapp.com/send/?phone=6283825757229"
+  const generateMessage = () => {
+    return cart.map((item, index) => {
+      const product = products.find((product) => product.id === item.id);
+      if (product) {
+        return `${index + 1}. ${product.title} - $${product.price} x ${item.qty} = *$${product.price * item.qty}*\n`
+      }
+    }).join(" ")
+  }
+  const messageCheckout = `Hello KevCart! \nYour order is as follows: \n \n ${generateMessage()} \n *Total = $${totalPrice.toFixed(2)}* \n \n Thank you for shopping with us!`
+
   const handleCheckout = () => {
     Swal.fire({
       icon: "warning",
       title: "Are you sure?",
-      text: "You will checkout the cart",
+      text: "You will checkout the cart?",
       showCancelButton: true,
       confirmButtonText: "Yes, checkout it!",
       cancelButtonText: "No, keep it",
     }).then((res) => {
       if(res.isConfirmed) {
-        Swal.fire({
-          icon: "info",
-          title: "Checkout Coming Soon",
-          confirmButtonText: "OK",
-        })
+        window.open(`${urlWhatsApp}&text=${encodeURIComponent(messageCheckout)}`, "_blank")
       }
     })
   };
@@ -219,7 +226,7 @@ const Cart = ({ closeCart }) => {
                   onClick={() => handleCheckout()}
                   className="bg-green-700 font-semibold text-xs sm:text-sm text-white py-2 px-4 rounded-lg hover:bg-green-800 duration-300 ease-linear"
                 >
-                  Checkout WhatsApp
+                  Checkout (WhatsApp)
                 </button>
               </div>
             </div>

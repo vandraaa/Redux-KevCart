@@ -86,7 +86,7 @@ const Product = ({ setIsLoaded }) => {
       <div className="w-full mx-[5%] mt-14">
         <div className="flex flex-col mx-auto m-6">
           {isLoading ? (
-            <div className="flex justify-center w-full mt-8">
+            <div className="flex justify-center w-full min-h-[85vh]">
               <Loading />
             </div>
           ) : (
@@ -135,7 +135,7 @@ const Product = ({ setIsLoaded }) => {
                   ))}
               </div>
               {filteredProducts.length === 0 && (
-                <div className="flex justify-center items-center w-full h-full">
+                <div className="flex justify-center w-full min-h-[65vh] sm:min-h-[75vh]">
                   <img
                     src={notFoundImage}
                     alt="No product found"
