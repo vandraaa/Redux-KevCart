@@ -104,7 +104,7 @@ const Cart = ({ closeCart }) => {
     }
   };
 
-  const urlWhatsApp = "https://api.whatsapp.com/send/?phone=6283825757229"
+  const urlWhatsApp = "https://api.whatsapp.com/send/?phone=6282314957109"
   const generateMessage = () => {
     return cart.map((item, index) => {
       const product = products.find((product) => product.id === item.id);
